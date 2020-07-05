@@ -11,13 +11,15 @@ import java.net.URL;
 public class ExtractData {
     public static int minAnnee;
     public static int maxAnnee;
-    public static String uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
+    //public static String uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
+    public static String uncompressedFiles="C:\\Users\\oussa\\BigDataProject\\weatherDataUncompressed";
 
 
     public static void downloadData() throws IOException {
         File resultPath;
         URL url;
-        uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
+        //String uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
+        String uncompressedFiles="C:\\Users\\oussa\\BigDataProject\\weatherDataUncompressed";
         File destFile = new File(uncompressedFiles);
         if (!destFile.exists()) {
             if (destFile.mkdir()) {
@@ -28,7 +30,8 @@ public class ExtractData {
         }
 
         for(int i=minAnnee;i<=maxAnnee;i++){
-            resultPath=new File("C:\\Users\\Lenovo\\Desktop\\weatherData\\"+i+".tar.gz");
+            //resultPath=new File("C:\\Users\\Lenovo\\Desktop\\weatherData\\"+i+".tar.gz");
+            resultPath=new File("C:\\Users\\oussa\\BigDataProject\\weatherData\\"+i+".tar.gz");
             url=new URL("https://www.ncei.noaa.gov/data/global-hourly/archive/csv/"+i+".tar.gz");
             System.out.println("Downloading file : "+i+".tar.gz");
             FileUtils.copyURLToFile(url,resultPath);
