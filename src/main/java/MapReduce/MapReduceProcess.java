@@ -19,6 +19,7 @@ import java.io.IOException;
 public class MapReduceProcess {
     public static final String outputDir= "C:\\Users\\oussa\\BigDataProject\\MapReduceIO\\output";
     public static final String inputFile = "C:\\Users\\oussa\\BigDataProject\\MapReduceIO\\input\\AllInOneFileData.csv";
+
     public static class Map extends Mapper<LongWritable, Text, Text, DoubleWritable> {
         public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
@@ -36,10 +37,11 @@ public class MapReduceProcess {
                 String temperature = temperatureField.split(",")[0];
                 String quality = temperatureField.split(",")[1];
 
-                if(temperature != "9999" && quality == "1") {
+                if(!temperature.equals("9999") && quality.equals("1")) {
                     newKey.set(year+"-"+month);
                     newValue = Double.valueOf(temperature)/10;
 
+                    System.out.println("--------- MAP OUTPUT LINES : " + newKey.toString() + " :::: " + newValue);
                     context.write(newKey, new DoubleWritable(newValue));
                 }
             }
@@ -61,8 +63,11 @@ public class MapReduceProcess {
             int length = 0;
             for(DoubleWritable value : values) {
                 sum += value.get();
-                length++;
+                length += 1;
             }
+            System.out.println("########### AVG SUM : " + sum);
+            System.out.println("########### AVG LEN : " + length);
+            System.out.println("########### AVG : " + sum/length);
             return sum/length;
         }
 
@@ -71,14 +76,19 @@ public class MapReduceProcess {
             for (DoubleWritable value : values) {
                 if (value.get() > max) max = value.get();
             }
+            System.out.println("########### MAX : " + max);
             return max;
         }
 
         private double getMin(Iterable<DoubleWritable> values) {
+            System.out.println("############ values : ");
+            for(DoubleWritable value: values) System.out.println(value.get());
+
             double min = Double.MAX_VALUE;
             for (DoubleWritable value : values) {
                 if (value.get() < min) min = value.get();
             }
+            System.out.println("########### MIN : " + min);
             return min;
         }
     }
@@ -92,6 +102,9 @@ public class MapReduceProcess {
 
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
+
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(DoubleWritable.class);
 
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
