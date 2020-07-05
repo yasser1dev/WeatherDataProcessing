@@ -15,6 +15,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapReduceProcess {
     public static final String outputDir= "C:\\Users\\oussa\\BigDataProject\\MapReduceIO\\output";
@@ -41,7 +43,6 @@ public class MapReduceProcess {
                     newKey.set(year+"-"+month);
                     newValue = Double.valueOf(temperature)/10;
 
-                    System.out.println("--------- MAP OUTPUT LINES : " + newKey.toString() + " :::: " + newValue);
                     context.write(newKey, new DoubleWritable(newValue));
                 }
             }
@@ -51,44 +52,42 @@ public class MapReduceProcess {
 
     public static class Reduce extends Reducer<Text, DoubleWritable, Text, Text> {
         public void reduce(Text key, Iterable<DoubleWritable> values, Context context) throws IOException, InterruptedException {
-            double min = getMin(values);
-            double max = getMax(values);
-            double avg = getAvg(values);
+            List<Double> valuesList = new ArrayList<Double>();
+            values.forEach(value -> {
+                valuesList.add(value.get());
+            });
+            double min = getMin(valuesList);
+            double max = getMax(valuesList);
+            double avg = getAvg(valuesList);
 
             context.write(key, new Text(String.valueOf(min+","+max+","+avg)));
         }
 
-        private double getAvg(Iterable<DoubleWritable> values) {
+        private double getAvg(List<Double> values) {
             double sum = 0;
             int length = 0;
-            for(DoubleWritable value : values) {
-                sum += value.get();
+            for(Double value : values) {
+                sum += value;
                 length += 1;
             }
-            System.out.println("########### AVG SUM : " + sum);
-            System.out.println("########### AVG LEN : " + length);
-            System.out.println("########### AVG : " + sum/length);
             return sum/length;
         }
 
-        private double getMax(Iterable<DoubleWritable> values) {
+        private double getMax(List<Double> values) {
             double max = Double.MIN_VALUE;
-            for (DoubleWritable value : values) {
-                if (value.get() > max) max = value.get();
+            for (Double value : values) {
+                if (value > max) max = value;
             }
-            System.out.println("########### MAX : " + max);
             return max;
         }
 
-        private double getMin(Iterable<DoubleWritable> values) {
-            System.out.println("############ values : ");
-            for(DoubleWritable value: values) System.out.println(value.get());
-
+        private double getMin(List<Double> values) {
             double min = Double.MAX_VALUE;
-            for (DoubleWritable value : values) {
-                if (value.get() < min) min = value.get();
+            for (Double value : values) {
+                if (value < min) {
+                    min = value;
+                }
             }
-            System.out.println("########### MIN : " + min);
             return min;
         }
     }
