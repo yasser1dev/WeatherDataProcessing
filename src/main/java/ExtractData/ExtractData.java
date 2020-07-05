@@ -11,11 +11,13 @@ import java.net.URL;
 public class ExtractData {
     public static int minAnnee;
     public static int maxAnnee;
+    public static String uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
+
 
     public static void downloadData() throws IOException {
         File resultPath;
         URL url;
-        String uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
+        uncompressedFiles="C:\\Users\\Lenovo\\Desktop\\weatherDataUncompressed";
         File destFile = new File(uncompressedFiles);
         if (!destFile.exists()) {
             if (destFile.mkdir()) {

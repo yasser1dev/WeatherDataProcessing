@@ -6,6 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.log4j.BasicConfigurator;
 import org.codehaus.plexus.archiver.tar.TarGZipUnArchiver;
 import org.codehaus.plexus.logging.console.ConsoleLoggerManager;
@@ -35,30 +36,31 @@ public class MainClass {
         ExtractData.maxAnnee=maxAnnee;
         ExtractData.downloadData();
 
+        File allYearsData=new File("src/main/resources/allYearsFileData.csv");
+        FileWriter fw=new FileWriter(allYearsData,true);
+        BufferedWriter br = new BufferedWriter(fw);
+        PrintWriter pr = new PrintWriter(br);
 
-
-
-
-
-        /*String csvFile = "C:\\Users\\Lenovo\\Desktop\\02907099999.csv";
         String line = "";
-        String cvsSplitBy = ",";
+        File[] files=new File(ExtractData.uncompressedFiles).listFiles();
+        for(File file:files){
+            File[] subFiles=new File(file.getAbsolutePath()).listFiles();
+            System.out.println(file.getName());
+            for(File subFile:subFiles){
+                System.out.println("--------------------> "+subFile.getName());
+                try  {
+                    BufferedReader brSubFile = new BufferedReader(new FileReader(subFile));
+                    while ((line = brSubFile.readLine()) != null) {
+                        pr.println(line);
+                    }
 
-        try  {
-            BufferedReader br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
-
-                // use comma as separator
-                //String[] country = line.split(cvsSplitBy);
-                System.out.println(line);
-                System.out.println("==================");
-
-
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+
 
     }
 
